@@ -1,0 +1,7 @@
+---
+
+- hosts: test
+  sudo: true
+  tasks:
+  - name: osa2.sh hook
+    copy: src=/etc/ansible/roles/hooks/osa2.sh dst=/var/www/.hooks/osa2.sh owner=ubuntu group=ubuntu mode=0755

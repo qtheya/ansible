@@ -1,0 +1,6 @@
+selectel/ssh/*
+selectel/sshd_config
+users.yml
+selectel/hosts
+selectel/nginx/*
+jenkins.yml

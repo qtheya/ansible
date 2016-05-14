@@ -1,0 +1,33 @@
+---
+- hosts: hermes 
+  gather_facts: no
+  become: yes
+  vars:
+    weave_env:
+        DOCKER_HOST: unix:///var/run/weave/weave.sock
+  tasks:
+    #- yum: name=python-pip state=latest
+    #- pip: state=present name=docker-py
+    - file: path=/srv/spark/tmp recurse=yes state=directory mode=0755
+    - firewalld: port=7077/tcp permanent=true state=enabled
+    - name: erase master
+      environment: "{{weave_env}}"
+      docker:
+         name: sparkmaster
+         image: registry.o-labs.ru/spark_master
+         state: absent
+    - name: spark master
+      environment: "{{weave_env}}"
+      docker:
+         name: sparkmaster
+         image: registry.o-labs.ru/spark_master
+         state: started
+         pull: always
+         volumes:
+           - "/srv/spark/tmp:/tmp"
+         ports:
+           - "8080:8080"
+           - "7077:7077"
+         restart_policy: always
+         restart_policy_retry: 5
+

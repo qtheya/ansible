@@ -1,0 +1,12 @@
+---
+- hosts: artemis:ares:maia:hermes
+  gather_facts: no
+  become: yes
+  tasks:
+    - blockinfile:
+          dest: /etc/security/limits.conf
+          block: |
+            *               -       nofile          100000
+            *               -       nproc           100000
+            *               -       memlock         unlimited
+          marker: "#Ansible"

@@ -1,0 +1,22 @@
+---
+- hosts: osa:mania:eco
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: link functions
+      lineinfile: 
+        dest: /etc/bashrc
+        state: present
+        line: "{{ item }}"
+      with_items:
+        - "bpwd() { basename `pwd`; }"
+        - "dcheck() { sudo docker inspect -f {{.State.Running}} $1; }"
+        - "drun() { sudo docker run; }"
+        - "dstop() { sudo docker stop; }"
+        - "drm() { sudo docker rm; }"
+        - "drestart() { sudo docker restart; }"
+        - "dpsa() { sudo docker ps -a; }"
+        - "drmv() { sudo docker volume rm $(docker volume ls -qf dangling=true); }"
+    - name: weave env
+        lineinfile: dest=/root/.bashrc state=present line="eval $(weave env)"
+

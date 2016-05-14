@@ -1,0 +1,13 @@
+---
+- hosts: postgres
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: Creates directory
+      file: path=/etc/postgresql/main state=directory owner=root group=root mode=0775
+    - copy: src=/etc/ansible/roles/selectel/main/pg_hba.conf dest=/etc/postgresql/main/pg_hba.conf owner=root group=root mode=0666
+    - copy: src=/etc/ansible/roles/selectel/main/postgresql.conf dest=/etc/postgresql/main/postgresql.conf owner=root group=root mode=0666
+    - copy: src=/etc/ansible/roles/selectel/main/pg_ctl.conf dest=/etc/postgresql/main/pg_ctl.conf owner=root group=root mode=0666
+    - copy: src=/etc/ansible/roles/selectel/main/pg_ident.conf dest=/etc/postgresql/main/pg_ident.conf owner=root group=root mode=0666
+    - copy: src=/etc/ansible/roles/selectel/main/start.conf dest=/etc/postgresql/main/start.conf owner=root group=root mode=0666
+    - copy: src=/etc/ansible/roles/selectel/main/environment dest=/etc/postgresql/main/environment owner=root group=root mode=0666

@@ -1,0 +1,31 @@
+---
+- hosts: artemis:ares:maia 
+  gather_facts: no
+  become: yes
+  vars:
+    weave_env:
+        DOCKER_HOST: unix:///var/run/weave/weave.sock
+  tasks:
+    - file: path=/srv/spark/tmp recurse=yes state=directory mode=0755
+    - firewalld: port=8081/tcp permanent=true state=enabled
+    - name: erase worker
+      environment: "{{weave_env}}"
+      docker:
+         name: spark_{{ inventory_hostname }}
+         image: registry.o-labs.ru/spark_worker
+         state: absent
+    - name: start spark worker
+      environment: "{{weave_env}}"
+      docker:
+         name: spark_{{ inventory_hostname }}
+         image: registry.o-labs.ru/spark_worker
+         state: started
+         pull: always
+         volumes:
+           - "/srv/spark/tmp:/tmp"
+         ports:
+           - "8081:8081"
+         restart_policy: always
+         restart_policy_retry: 5
+         cpu_set: 11-31
+         memory_limit: 61440MB

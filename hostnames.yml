@@ -1,0 +1,75 @@
+---
+- hosts: ares:artemis:athena:maia:hermes
+  become: true
+  tasks:
+    - shell: ip link set enp4s0f1 down
+    - shell: ip link set enp4s0f1 name eth1
+    - shell: ip link set eth1 up
+    - lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-enp4s0f1 line="NAME=enp4s0f1" state=absent
+    - lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-enp4s0f1 line="DEVICE=enp4s0f1" state=absent
+    - lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-enp4s0f1 line="NAME=eth1" state=present
+    - lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-enp4s0f1 line="DEVICE=eth1" state=present
+
+    - name: set enp4s0f1
+      stat: path=/etc/sysconfig/network-scripts/ifcfg-enp4s0f1
+      register: enp4s0f1
+
+    - name: rename to eth1
+      command: mv /etc/sysconfig/network-scripts/ifcfg-enp4s0f1 /etc/sysconfig/network-scripts/ifcfg-eth1
+      when: enp4s0f1.stat.exists
+    - name: restart network
+      service: name=network state=restarted
+
+- hosts: poseidon
+  become: true
+  tasks:
+    - hostname: name=poseidon
+- hosts: zeus
+  become: true
+  tasks:
+    - hostname: name=zeus
+- hosts: jupiter
+  become: true
+  tasks:
+    - hostname: name=jupiter
+- hosts: ceres
+  become: true
+  tasks:
+    - hostname: name=ceres
+- hosts: hera
+  become: true
+  tasks:
+    - hostname: name=hera
+- hosts: dionysos
+  become: true
+  tasks:
+    - hostname: name=dionysos
+- hosts: hermes
+  become: true
+  tasks:
+    - hostname: name=hermes
+- hosts: demeter
+  become: true
+  tasks:
+    - hostname: name=demeter
+- hosts: athena
+  become: true
+  tasks:
+    - hostname: name=athena
+- hosts: apollo
+  become: true
+  tasks:
+    - hostname: name=apollo
+- hosts: maia
+  become: true
+  tasks:
+    - hostname: name=maia
+- hosts: artemis
+  become: true
+  tasks:
+    - hostname: name=artemis
+- hosts: ares
+  become: true
+  tasks:
+    - hostname: name=ares
+

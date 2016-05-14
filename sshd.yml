@@ -1,0 +1,9 @@
+---
+- hosts: osa:mania:eco
+  gather_facts: no
+  become: yes
+  tasks:
+    - firewalld: port=34522/tcp permanent=true state=enabled
+    - copy: src=/etc/ansible/roles/selectel/sshd_config dest=/etc/ssh/sshd_config owner=root group=root mode=0600
+    - service: name=sshd state=restarted
+    - seport: ports=34522 proto=tcp setype=ssh_port_t state=present

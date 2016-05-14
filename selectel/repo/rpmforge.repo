@@ -1,0 +1,7 @@
+[rpmforge]
+name=rpmforge
+baseurl=http://apt.sw.be/redhat/el7/en/$basearch/rpmforge
+mirrorlist=http://mirrorlist.repoforge.org/el7/mirrors-rpmforge
+enabled=1
+
+

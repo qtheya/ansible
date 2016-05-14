@@ -1,0 +1,62 @@
+---
+- hosts: artemis:ares:maia
+  gather_facts: no
+  become: yes
+  vars:
+    weave_env:
+        DOCKER_HOST: unix:///var/run/weave/weave.sock
+  tasks:
+    #- name: cassa_dirs
+    #  file: path=/srv/cassandra/{{ item }} recurse=yes state=directory mode=0755
+    #  with_items:
+    #    - conf
+    #    - commitlog
+    #    - data  
+    
+    - name: stop cassandra
+      environment: "{{weave_env}}"     
+      docker:
+         name: cassandra_{{ inventory_hostname }}
+         registry: registry.o-labs.ru
+         image: cassandra
+         state: stopped
+    - shell: docker rename cassandra_{{ inventory_hostname }} c_o
+  
+    - name: cassandra_docker
+      environment: "{{weave_env}}"
+      docker:
+         name: cassandra_{{ inventory_hostname }}
+         registry: registry.o-labs.ru
+         image: cassandra
+         state: present
+         pull: always
+         volumes_from:
+            - c_o
+#         volumes:
+#            - "/srv/cassandra/commitlog:/var/lib/cassandra/commitlog"
+#            - "/srv/cassandra/data:/var/lib/cassandra/data"
+         ports:
+           - "9042:9042"
+         restart_policy: always
+         restart_policy_retry: 5
+         cpu_set: 1-21
+         memory_limit: 61440MB      
+    - copy: src=/etc/ansible/roles/selectel/cassandra/cassandra.yaml dest=/srv/cassandra/conf/cassandra.yaml owner=root group=root mode=0644
+    - copy: src=/etc/ansible/roles/selectel/cassandra/cassandra-env.sh dest=/srv/cassandra/conf/cassandra-env.sh owner=root group=root mode=0644
+    - shell: docker cp /srv/cassandra/conf/cassandra.yaml cassandra_{{ inventory_hostname }}:/etc/cassandra/
+    - shell: docker cp /srv/cassandra/conf/cassandra-env.sh cassandra_{{ inventory_hostname }}:/etc/cassandra/
+    - name: commit cassandra
+      environment: "{{ weave_env }}"
+      shell: docker commit cassandra_{{ inventory_hostname }}
+    - name: start cassandra
+      environment: "{{ weave_env }}"
+      shell: docker start cassandra_{{ inventory_hostname }}
+
+    - name: remove c_o
+      environment: "{{weave_env}}"
+      docker:
+        name: c_o
+        registry: registry.o-labs.ru
+        image: cassandra
+        state: absent
+    

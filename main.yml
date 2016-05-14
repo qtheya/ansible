@@ -1,0 +1,48 @@
+---
+- hosts: athena:artemis:ares:maia:hermes
+  become: yes
+  tasks:
+    - name: updateOS
+      yum: name=* state=latest
+    - name: installs
+      yum: name={{ item }} state=latest
+      with_items: 
+        - docker-engine-selinux
+        - vim
+        - docker-engine
+        - git
+        - libselinux-python
+        - epel-release
+        - iotop
+        - mlocate
+        - mc
+        - nano
+        - wget
+        - curl
+        - htop
+        - iftop
+        - python-pip
+    - name: install docker-py
+      pip: state=present name=docker-py
+    - name: set time
+      file: src=/usr/share/zoneinfo/Europe/Kiev dest=/etc/localtime state=link force=yes
+    - name: add vim options
+      lineinfile:
+        dest: /etc/vimrc
+        state: present
+        line: "{{ item }}"
+      with_items:
+        - "set ls=2"
+        - "colorscheme slate"
+        - "set scrolloff=5"
+        - "syntax enable"
+        - "set nocompatible"
+        - "set autoindent"
+        - "set tabstop=3"
+        - "set cursorline"
+        - "hi CursorLine ctermbg=235"
+        - "hi Comment ctermfg=darkcyan"
+        - "set showmatch"
+        - "set hlsearch"
+        - "set incsearch"
+        - "set ignorecase"

@@ -1,0 +1,11 @@
+---
+- hosts: artemis:ares:maia:hermes 
+  become: yes
+  gather_facts: no
+  tasks:
+    - copy: src=/etc/ansible/roles/selectel/repo/docker.repo dest=/etc/yum.repos.d/docker.repo owner=root group=root mode=0644
+    - copy: src=/etc/ansible/roles/selectel/repo/rpmforge.repo dest=/etc/yum.repos.d/rpmforge.repo owner=root group=root mode=0644
+    - copy: src=/etc/ansible/roles/selectel/repo/RPM-GPG-KEY.dag.txt dest=/etc/yum.repos.d/RPM-GPG-KEY.dag.txt owner=root group=root mode=0644
+    - shell: rpm --import /etc/yum.repos.d/RPM-GPG-KEY.dag.txt
+
+

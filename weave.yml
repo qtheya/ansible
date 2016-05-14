@@ -1,0 +1,47 @@
+---
+- hosts: athena:artemis:ares:maia:hermes 
+  become: yes
+  tasks:
+    - file: path=/bin/weave state=absent
+    - get_url: url=https://git.io/weave dest=/bin/weave mode=777
+    - service: name=docker state=restarted
+
+- hosts: athena:ares:artemis:hermes:maia
+  become: yes
+  tasks:
+    - name: forward
+      shell: iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited
+      ignore_errors: yes
+    - name: input
+      shell: iptables -D INPUT -j REJECT --reject-with icmp-host-prohibited
+      ignore_errors: yes
+    - shell: iptables-save
+
+
+- hosts: hermes
+  become: yes
+  tasks:
+    - shell: weave launch
+
+- hosts: athena:ares:artemis:maia
+  become: yes
+  tasks:
+    - name: weave launch
+      shell: weave launch 10.0.0.1
+
+- hosts: hermes:artemis:ares:athena:maia
+  become: yes
+  vars:
+    weave_env:
+        DOCKER_HOST: unix:///var/run/weave/weave.sock
+  tasks:
+    - name: connect weave
+      environment: "{{weave_env}}"
+      shell: weave connect 10.0.0.{{ item }}
+      with_items:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+      when: ansible_eth1.ipv4.address != '10.0.0.{{ item }}'
