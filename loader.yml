@@ -1,0 +1,32 @@
+---
+- hosts: hermes 
+  gather_facts: no
+  become: yes
+  vars:
+    weave_env:
+        DOCKER_HOST: unix:///var/run/weave/weave.sock
+  tasks:
+    - name: erase loader
+      environment: "{{weave_env}}"
+      docker:
+         name: loader
+         image: registry.o-labs.ru/scala
+         state: absent
+    - name: run loader
+      environment: "{{weave_env}}"
+      docker:
+         name: loader
+         image: registry.o-labs.ru/scala
+         state: started
+         pull: always
+         volumes:
+           - "/srv/scala_projects:/opt"
+           - "/srv/ivy:/root/.ivy2"
+         ports:
+           - "4040:4040"
+         restart_policy: always
+         restart_policy_retry: 5
+         command: bash -c "while true; do i=1; done"
+    - name: resolver
+      shell: docker exec loader bash -c "echo 'nameserver 8.8.8.8' >> /etc/resolv.conf"
+

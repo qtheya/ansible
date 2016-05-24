@@ -1,5 +1,5 @@
 ---
-- hosts: artemis:ares:maia:hermes 
+- hosts: demeter 
   become: yes
   gather_facts: no
   tasks:

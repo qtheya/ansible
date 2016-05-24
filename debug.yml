@@ -1,18 +1,20 @@
 ---
-- hosts: ceres
-  become: yes
-  gather_facts: no
-  vars:
-    weave_env:
-        DOCKER_HOST: unix:///var/run/weave/weave.sock
+- hosts: mania:eco:osa
+  become: true
   tasks:
-    - yum: name=python-pip state=latest
-    - pip: state=present name=docker-py
-    - shell: export DOCKER_HOST=unix:///var/run/weave/weave.sock
-    - name: starttest
-      environment: "{{weave_env}}"
-      docker:
-        name: test_{{ inventory_hostname }}
-        image: ubuntu
-        state: started
-        command: sleep 1d
+    - debug: msg={{ item }} 
+      with_items:
+        - poseidon
+        - zeus
+        - jupiter
+        - ceres
+        - hera
+        - dionysos
+        - hermes
+        - demeter
+        - athena
+        - maia
+        - apollo
+        - artemis
+        - ares
+      when: inventory_hostname == item

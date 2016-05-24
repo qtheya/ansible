@@ -1,0 +1,12 @@
+[Unit]
+Description=python socket daemon
+
+[Service]
+TimeoutStopSec=5
+WorkingDirectory=/storage/www/catmania
+ExecStart=/bin/python -u /storage/www/catmania/dockerSocket.py 
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

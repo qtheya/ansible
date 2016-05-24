@@ -1,5 +1,5 @@
 ---
-- hosts: ares:artemis:athena:maia:hermes
+- hosts: jupiter
   become: true
   tasks:
     - shell: ip link set enp4s0f1 down
@@ -20,56 +20,22 @@
     - name: restart network
       service: name=network state=restarted
 
-- hosts: poseidon
-  become: true
-  tasks:
-    - hostname: name=poseidon
-- hosts: zeus
-  become: true
-  tasks:
-    - hostname: name=zeus
-- hosts: jupiter
-  become: true
-  tasks:
-    - hostname: name=jupiter
-- hosts: ceres
-  become: true
-  tasks:
-    - hostname: name=ceres
-- hosts: hera
-  become: true
-  tasks:
-    - hostname: name=hera
-- hosts: dionysos
-  become: true
-  tasks:
-    - hostname: name=dionysos
-- hosts: hermes
-  become: true
-  tasks:
-    - hostname: name=hermes
-- hosts: demeter
-  become: true
-  tasks:
-    - hostname: name=demeter
-- hosts: athena
-  become: true
-  tasks:
-    - hostname: name=athena
-- hosts: apollo
-  become: true
-  tasks:
-    - hostname: name=apollo
-- hosts: maia
-  become: true
-  tasks:
-    - hostname: name=maia
-- hosts: artemis
-  become: true
-  tasks:
-    - hostname: name=artemis
-- hosts: ares
-  become: true
-  tasks:
-    - hostname: name=ares
-
+#- hosts: mania:eco:osa
+#  become: true
+#  tasks:
+#    - hostname: name={{ item }}
+#      with_items:
+#        - poseidon
+#        - zeus
+#        - jupiter
+#        - ceres
+#        - hera
+#        - dionysos
+#        - hermes
+#        - demeter
+#        - athena
+#        - maia
+#        - apollo
+#        - artemis
+#        - ares
+#      when: inventory_hostname == item

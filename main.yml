@@ -1,5 +1,5 @@
 ---
-- hosts: athena:artemis:ares:maia:hermes
+- hosts: demeter 
   become: yes
   tasks:
     - name: updateOS

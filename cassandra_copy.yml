@@ -1,0 +1,23 @@
+---
+- hosts: maia:ares:artemis
+  gather_facts: no
+  become: yes
+  vars:
+    weave_env:
+        DOCKER_HOST: unix:///var/run/weave/weave.sock
+  tasks:
+     - copy: src=/etc/ansible/roles/selectel/cassandra/jvm.options dest=/srv/cassandra/conf/ mode=0660
+     - copy: src=/etc/ansible/roles/selectel/cassandra/cassandra.yaml dest=/srv/cassandra/conf/ mode=0660
+     - copy: src=/etc/ansible/roles/selectel/cassandra/cassandra-env.sh dest=/srv/cassandra/conf/ mode=0660
+     - shell: docker cp /srv/cassandra/conf/jvm.options cassandra_{{ inventory_hostname }}:/etc/cassandra/
+     - shell: docker cp /srv/cassandra/conf/cassandra-env.sh cassandra_{{ inventory_hostname }}:/etc/cassandra/
+     - shell: docker cp /srv/cassandra/conf/cassandra.yaml cassandra_{{ inventory_hostname }}:/etc/cassandra/
+     - shell: docker commit cassandra_{{ inventory_hostname }}
+     - name: cassandra_docker
+       environment: "{{weave_env}}"
+       docker:
+         name: cassandra_{{ inventory_hostname }}
+         registry: registry.o-labs.ru
+         image: cassandra
+         state: reloaded
+

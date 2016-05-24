@@ -1,5 +1,7 @@
-FROM registry.o-labs.ru/scala                                                                                                                                                                                      
+FROM registry.o-labs.ru/java 
 MAINTAINER DevOps "alexander.kuzmovych@o-labs.ru"
+
+RUN apt-get -y install openssh-server
 
 RUN ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa
 RUN cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
@@ -23,5 +25,4 @@ RUN dpkg -i /opt/spark.deb
 RUN rm -rf /opt/spark.deb
 VOLUME /tmp
 
-EXPOSE 7077 8080-8087 8888 22
-
+EXPOSE 7077 8080-8087 8888 22 

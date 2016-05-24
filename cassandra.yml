@@ -51,7 +51,8 @@
     - name: start cassandra
       environment: "{{ weave_env }}"
       shell: docker start cassandra_{{ inventory_hostname }}
-
+    - name: resolver
+      shell: docker exec cassandra_{{ inventory_hostname }} bash -c "echo 'nameserver 8.8.8.8' >> /etc/resolv.conf"
     - name: remove c_o
       environment: "{{weave_env}}"
       docker:

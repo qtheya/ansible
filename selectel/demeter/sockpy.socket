@@ -1,0 +1,11 @@
+[Unit]
+Description=python socket daemon
+PartOf=sockpy.service
+
+[Socket]
+ListenStream=95.213.164.101:9876
+Accept=yes
+
+[Install]
+WantedBy=sockets.target
+
